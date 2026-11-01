@@ -51,7 +51,23 @@ def parse_gcloud_config(raw: str) -> dict:
     # TODO: parse `raw` as JSON and return {"account": ..., "project": ...}
     #       from the "core" section. Return empty strings if raw is empty or a
     #       field is missing.
-    raise NotImplementedError("Phase 0: implement parse_gcloud_config()")
+    # raise NotImplementedError("Phase 0: implement parse_gcloud_config()")
+    empty = {"account": "", "project": ""}
+    if not raw or not raw.strip():          # "" or only spaces
+        return empty
+    try:
+        data = json.loads(raw)              # text -> dictionary
+    except json.JSONDecodeError:            # text isn't valid JSON
+        return empty
+    if not isinstance(data, dict):          # JSON was a list/number, not a cabinet
+        return empty
+    core = data.get("core")                 # open the "core" drawer safely
+    if not isinstance(core, dict):          # missing, or not a cabinet
+        return empty
+    return {
+        "account": core.get("account") or "",   # missing or null -> ""
+        "project": core.get("project") or "",
+    }
 
 
 def parse_repo_slug(remote_url: str) -> str:
@@ -69,7 +85,23 @@ def parse_repo_slug(remote_url: str) -> str:
     """
     # TODO: return "owner/repo" for both the HTTPS and SSH forms shown above.
     #       Strip any trailing ".git". Return "" if not a github.com URL.
-    raise NotImplementedError("Phase 0: implement parse_repo_slug()")
+    # raise NotImplementedError("Phase 0: implement parse_repo_slug()")
+    url = (remote_url or "").strip()
+    prefixes = ("https://github.com/", "http://github.com/",
+                "git@github.com:", "ssh://git@github.com/")
+    for prefix in prefixes:
+        if url.startswith(prefix):
+            path = url[len(prefix):]        # keep only what follows the prefix
+            break
+    else:                                   # no prefix matched: not GitHub
+        return ""
+    path = path.rstrip("/")                 # tolerate a trailing slash
+    if path.endswith(".git"):
+        path = path[:-4]                    # remove the 4 characters ".git"
+    parts = path.split("/")                 # "owner/repo" -> ["owner", "repo"]
+    if len(parts) != 2 or not parts[0] or not parts[1]:
+        return ""                           # too few/many pieces, or empty
+    return parts[0] + "/" + parts[1]
 
 
 # --------------------------------------------------------------------------- #
