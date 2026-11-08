@@ -1,0 +1,30 @@
+{
+  "phase": "2",
+  "environment": {
+    "colab": true
+  },
+  "attention": {
+    "naive_ms": 245.662,
+    "vectorized_ms": 0.972,
+    "speedup": 252.74
+  },
+  "threads": {
+    "1": 2348.57,
+    "2": 2223.756,
+    "4": 2298.026,
+    "8": 2481.057
+  },
+  "devices": {
+    "cpu_ms": 463587.0,
+    "gpu_ms": 12636.6
+  },
+  "training": {
+    "steps": 2000,
+    "final_loss": 1.4685,
+    "param_count": 4935680
+  },
+  "sample": "\nTo when all yet noight, be reconded piteen,\nAnd yet she misetiong against less,\nAnd to maker for extacroal defectetion.\nDest on Yort, sain, make I hate appeace\nNo like the us should it'd be;\nI mether?",
+  "model": {
+    "gcs_url": "https://storage.googleapis.com/eurecomgpt-ajay-suppal-pid-007-eurecomgpt/model.safetensors"
+  }
+}
